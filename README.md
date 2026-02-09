@@ -13,7 +13,7 @@ This is a Spring Boot application acting as a Model Context Protocol (MCP) serve
 
 ## Prerequisites
 
--   Java 17 or later
+-   Java 21 or later
 -   Maven 3.6 or later
 -   A [WeatherAPI](https://www.weatherapi.com/) API Key
 
