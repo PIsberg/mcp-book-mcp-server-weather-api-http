@@ -7,6 +7,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.MediaType;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+/**
+ * Example code from Book What you need to know about MCP servers - with Java
+ * and spring-boot examples By Peter Isberg
+ * URL: TODO
+ */
+
 @RestController
 public class McpSseController {
 

@@ -2,6 +2,11 @@
 
 This is a Spring Boot application acting as a Model Context Protocol (MCP) server that provides weather information using the WeatherAPI.
 
+Example code from Book What you need to know about MCP servers - with Java and spring-boot examples
+By Peter Isberg 
+URL: TODO
+
+
 ## Features
 
 -   **Weather Tool**: Exposes a `weather-tool` that fetches current weather for a specified city.

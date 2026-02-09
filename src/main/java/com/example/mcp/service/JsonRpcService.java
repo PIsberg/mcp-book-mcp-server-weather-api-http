@@ -6,6 +6,12 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.springframework.stereotype.Service;
 
+/**
+ * Example code from Book What you need to know about MCP servers - with Java
+ * and spring-boot examples By Peter Isberg
+ * URL: TODO
+ */
+
 @Service
 public class JsonRpcService {
 
@@ -18,8 +24,9 @@ public class JsonRpcService {
 
     public String handleRequest(String line) {
         try {
-            if (line == null || line.trim().isEmpty()) return null;
-            
+            if (line == null || line.trim().isEmpty())
+                return null;
+
             JsonNode root = mapper.readTree(line);
             String method = root.has("method") ? root.get("method").asText() : "";
             JsonNode idNode = root.get("id");
@@ -35,47 +42,47 @@ public class JsonRpcService {
             if ("initialize".equals(method)) {
                 ObjectNode result = response.putObject("result");
                 result.put("protocolVersion", "2024-11-05");
-                
+
                 ObjectNode capabilities = result.putObject("capabilities");
                 capabilities.putObject("tools");
                 // Explicitly declare resources and prompts support (even if empty)
-                capabilities.putObject("resources"); 
+                capabilities.putObject("resources");
                 capabilities.putObject("prompts");
-                
+
                 ObjectNode serverInfo = result.putObject("serverInfo");
                 serverInfo.put("name", "weather-tool");
                 serverInfo.put("version", "1.0");
-                
+
                 return mapper.writeValueAsString(response);
             }
 
             if ("notifications/initialized".equals(method)) {
-                return null; 
+                return null;
             }
 
             if ("tools/list".equals(method)) {
                 ObjectNode result = response.putObject("result");
                 ArrayNode tools = result.putArray("tools");
-                
+
                 ObjectNode tool = tools.addObject();
                 tool.put("name", "weather-tool");
                 tool.put("description", "Get the current weather for a specific city.");
-                
+
                 ObjectNode schema = tool.putObject("inputSchema");
                 schema.put("type", "object");
                 ObjectNode props = schema.putObject("properties");
-                
+
                 props.putObject("q")
-                     .put("type", "string")
-                     .put("description", "City name (e.g. London)");
+                        .put("type", "string")
+                        .put("description", "City name (e.g. London)");
                 props.putObject("key")
-                     .put("type", "string")
-                     .put("description", "API Key");
-                
+                        .put("type", "string")
+                        .put("description", "API Key");
+
                 ArrayNode required = schema.putArray("required");
                 required.add("q");
                 required.add("key");
-                
+
                 return mapper.writeValueAsString(response);
             }
 
@@ -96,21 +103,21 @@ public class JsonRpcService {
             if ("tools/call".equals(method)) {
                 JsonNode params = root.get("params");
                 String toolName = params.has("name") ? params.get("name").asText() : "";
-                
+
                 if (!"weather-tool".equals(toolName)) {
-                     throw new RuntimeException("Unknown tool: " + toolName);
+                    throw new RuntimeException("Unknown tool: " + toolName);
                 }
 
                 JsonNode args = params.has("arguments") ? params.get("arguments") : mapper.createObjectNode();
                 String toolResult = toolHandler.execute(args);
-                
+
                 ObjectNode result = response.putObject("result");
                 result.put("isError", false);
                 ArrayNode content = result.putArray("content");
                 ObjectNode textContent = content.addObject();
                 textContent.put("type", "text");
                 textContent.put("text", toolResult);
-                
+
                 return mapper.writeValueAsString(response);
             }
 
@@ -118,7 +125,7 @@ public class JsonRpcService {
             if (idNode != null) {
                 ObjectNode err = mapper.createObjectNode();
                 err.put("jsonrpc", "2.0");
-                err.set("id", idNode); 
+                err.set("id", idNode);
                 ObjectNode errorObj = err.putObject("error");
                 errorObj.put("code", -32601);
                 errorObj.put("message", "Method not found: " + method);
@@ -136,7 +143,7 @@ public class JsonRpcService {
         try {
             ObjectNode err = mapper.createObjectNode();
             err.put("jsonrpc", "2.0");
-            err.putNull("id"); 
+            err.putNull("id");
             ObjectNode errorObj = err.putObject("error");
             errorObj.put("code", -32603);
             errorObj.put("message", "Internal Error: " + message);
