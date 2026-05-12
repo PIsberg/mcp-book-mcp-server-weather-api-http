@@ -10,7 +10,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 /**
  * Example code from Book What you need to know about MCP servers - with Java
  * and spring-boot examples By Peter Isberg
- * URL: TODO
+ * URL: https://leanpub.com/wyntka-mcpservers-withjava
  */
 
 @RestController
